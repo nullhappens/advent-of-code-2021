@@ -10,15 +10,15 @@ object Day1 extends IOApp.Simple {
       lines <- Utilities
         .loadSolutionFile[IO]("/day1.txt")
         .filter(_.length() > 0)
-        .evalMap(parseInt)
+        .evalMap(x => IO.fromEither(parseInt(x)))
         .compile
         .toList
       _ <- IO.println(s"solution for part 1: ${part1(lines)}")
       _ <- IO.println(s"solution for part 2: ${part2(lines)}")
     } yield ()
 
-  def parseInt(s: String): IO[Int] =
-    IO.fromEither(Either.catchNonFatal(Integer.parseInt(s)))
+  def parseInt(s: String): Either[Throwable, Int] =
+    Either.catchNonFatal(Integer.parseInt(s))
 
   def part1(ls: List[Int]): Int =
     ls

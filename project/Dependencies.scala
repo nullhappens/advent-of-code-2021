@@ -1,11 +1,12 @@
 import sbt._
 
 object Dependencies {
-  val scalaTest = "org.scalatest" %% "scalatest" % "3.2.9"
   val scalafixOrganizeImports =
     "com.github.liancheng" %% "organize-imports" % "0.4.0"
 
   val log4Cats = "org.typelevel" %% "log4cats-slf4j" % "2.1.1"
+
+  val mUnit = "org.scalameta" %% "munit" % "0.7.29"
 
   object FS2 {
     private val fs2Version = "3.2.2"

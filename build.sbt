@@ -26,7 +26,7 @@ lazy val root = (project in file("."))
       log4j2.core,
       log4j2.api,
       log4j2.slf4j,
-      scalaTest % Test
+      mUnit % Test
     )
   )
 
