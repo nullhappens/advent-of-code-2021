@@ -16,10 +16,11 @@ object Utilities {
       true
     ).through(text.utf8.decode)
       .through(text.lines)
+      .filter(_.trim().length() > 0)
 
-  def parseInt(s: String): Option[Int] =
-    Either.catchNonFatal(Integer.parseInt(s)).toOption
+  def parseInt(s: String): Either[Throwable, Int] =
+    Either.catchNonFatal(Integer.parseInt(s))
 
-  def parseLong(s: String): Option[Long] =
-    Either.catchNonFatal(java.lang.Long.parseLong(s)).toOption
+  def parseLong(s: String): Either[Throwable, Long] =
+    Either.catchNonFatal(java.lang.Long.parseLong(s))
 }
