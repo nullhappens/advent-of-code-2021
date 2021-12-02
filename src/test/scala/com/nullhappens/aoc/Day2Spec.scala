@@ -31,7 +31,7 @@ class Day2Spec extends FunSuite {
   }
 
   test("tests for part2") {
-    assert(true)
+    assertEquals(Day2.part2(expected), 900)
   }
 
 }

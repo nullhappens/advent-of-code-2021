@@ -2,6 +2,7 @@ package com.nullhappens.aoc
 
 import cats.effect._
 import cats.implicits._
+import scala.annotation.tailrec
 
 object Day2 extends IOApp.Simple {
 
@@ -12,7 +13,7 @@ object Day2 extends IOApp.Simple {
 
   final case class Instruction(direction: Direction, value: Int)
 
-  final case class Position(horizontal: Int, depth: Int)
+  final case class Position(horizontal: Int, depth: Int, aim: Int)
 
   override def run: IO[Unit] =
     for {
@@ -53,6 +54,7 @@ object Day2 extends IOApp.Simple {
   }
 
   def part1(ls: List[Instruction]): Int = {
+    @tailrec
     def loop(position: Position, ls: List[Instruction]): Position =
       ls match {
         case instruction :: next =>
@@ -61,7 +63,8 @@ object Day2 extends IOApp.Simple {
               loop(
                 Position(
                   position.horizontal + instruction.value,
-                  position.depth
+                  position.depth,
+                  0
                 ),
                 next
               )
@@ -69,7 +72,8 @@ object Day2 extends IOApp.Simple {
               loop(
                 Position(
                   position.horizontal,
-                  position.depth + instruction.value
+                  position.depth + instruction.value,
+                  0
                 ),
                 next
               )
@@ -77,17 +81,56 @@ object Day2 extends IOApp.Simple {
               loop(
                 Position(
                   position.horizontal,
-                  position.depth - instruction.value
+                  position.depth - instruction.value,
+                  0
                 ),
                 next
               )
           }
         case Nil => position
       }
-    val finalPosition = loop(Position(0, 0), ls)
+    val finalPosition = loop(Position(0, 0, 0), ls)
     finalPosition.horizontal * finalPosition.depth
   }
 
-  def part2(ls: List[Instruction]): Int = ls.length
+  def part2(ls: List[Instruction]): Int = {
+    def loop(position: Position, ls: List[Instruction]): Position =
+      ls match {
+        case instruction :: next =>
+          instruction.direction match {
+            case Forward =>
+              loop(
+                Position(
+                  position.horizontal + instruction.value,
+                  position.depth + (position.aim * instruction.value),
+                  position.aim
+                ),
+                next
+              )
+            case Down =>
+              loop(
+                Position(
+                  position.horizontal,
+                  position.depth,
+                  position.aim + instruction.value
+                ),
+                next
+              )
+            case Up =>
+              loop(
+                Position(
+                  position.horizontal,
+                  position.depth,
+                  position.aim - instruction.value
+                ),
+                next
+              )
+          }
+        case Nil => position
+      }
+    val finalPosition = loop(Position(0, 0, 0), ls)
+    finalPosition.horizontal * finalPosition.depth
+
+  }
 
 }
