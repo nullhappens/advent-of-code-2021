@@ -94,6 +94,7 @@ object Day2 extends IOApp.Simple {
   }
 
   def part2(ls: List[Instruction]): Int = {
+    @tailrec
     def loop(position: Position, ls: List[Instruction]): Position =
       ls match {
         case instruction :: next =>
