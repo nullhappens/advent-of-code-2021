@@ -56,74 +56,37 @@ object Day3 extends IOApp.Simple {
 
   def getVerticalSlice(pos: Int, mx: Array[Array[Int]]): List[Int] = {
     val slice = new ListBuffer[Int]()
-      for (j <- 0 until mx.length) {
-        slice += mx(j)(pos)
-      }
+    for (j <- 0 until mx.length) {
+      slice += mx(j)(pos)
+    }
     slice.toList
   }
 
   def filterValues(mx: Array[Array[Int]], pos: Int, value: Int) =
-    mx.filter{ xs =>
+    mx.filter { xs =>
       xs(pos) === value
     }
 
-  def getOxygen(mx: Array[Array[Int]]): List[Int] = {
+  def filterMatrix(mx: Array[Array[Int]], f: (Int, Int) => Int) = {
     @tailrec
     def loop(mx: Array[Array[Int]], pos: Int): List[Int] = {
       if (mx.length === 1)
         mx(0).toList
       else {
         val slice = getVerticalSlice(pos, mx)
-        println(s"evaluating ${slice.mkString}")
         val zeroes = slice.count(_ === 0)
         val ones = slice.count(_ === 1)
-        println(s"zeroes: $zeroes vs ones $ones")
-        println(s"new values:")
-        if (ones >= zeroes){
-          filterValues(mx, pos, 1).foreach{ l =>
-            println(s"${l.mkString}")
-          }
-          loop(filterValues(mx, pos, 1), pos + 1)
-        } else {
-          filterValues(mx, pos, 1).foreach{ l =>
-            println(s"${l.mkString}")
-          }
-          loop(filterValues(mx, pos, 0), pos + 1)
-        }
-
+        loop(filterValues(mx, pos, f(zeroes, ones)), pos + 1)
       }
     }
     loop(mx, 0)
   }
 
-  def getCO2(mx: Array[Array[Int]]): List[Int] = {
-    @tailrec
-    def loop(mx: Array[Array[Int]], pos: Int): List[Int] = {
-      if (mx.length === 1)
-        mx(0).toList
-      else {
-        val slice = getVerticalSlice(pos, mx)
-        println(s"evaluating ${slice.mkString}")
-        val zeroes = slice.count(_ === 0)
-        val ones = slice.count(_ === 1)
-        println(s"zeroes: $zeroes vs ones $ones at position $pos")
-        println(s"new values:")
-        if (zeroes <= ones){
-          filterValues(mx, pos, 0).foreach{ l =>
-            println(s"${l.mkString}")
-          }
-          loop(filterValues(mx, pos, 0), pos + 1)
-        } else {
-          filterValues(mx, pos, 1).foreach{ l =>
-            println(s"${l.mkString}")
-          }
-          loop(filterValues(mx, pos, 1), pos + 1)
-        }
+  def getOxygen(mx: Array[Array[Int]]): List[Int] =
+    filterMatrix(mx, (z, o) => if (o >= z) 1 else 0)
 
-      }
-    }
-    loop(mx, 0)
-  }
+  def getCO2(mx: Array[Array[Int]]): List[Int] =
+    filterMatrix(mx, (z, o) => if (z <= o) 0 else 1)
 
   def part1(ls: Array[Array[Int]]): Int = {
     val epsilon = getEpsilon(ls)
