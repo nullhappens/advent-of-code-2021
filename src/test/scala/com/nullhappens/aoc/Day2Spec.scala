@@ -1,8 +1,8 @@
 package com.nullhappens.aoc
 
-import munit.FunSuite
-import Day2._
 import cats.implicits._
+import Day2._
+import munit.FunSuite
 
 class Day2Spec extends FunSuite {
 
